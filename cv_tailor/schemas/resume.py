@@ -1,15 +1,15 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, ClassVar
 
 from pydantic import BaseModel, ConfigDict, Field
 
 
-ResumeJSON = dict[str, Any]
+ResumeJSON = dict[str, Any]  # pyright: ignore[reportExplicitAny]
 
 
 class RRBaseModel(BaseModel):
-    model_config = ConfigDict(extra="allow")
+    model_config: ClassVar[ConfigDict] = ConfigDict(extra="allow")
 
 
 class ResumeBasics(RRBaseModel):
@@ -17,17 +17,17 @@ class ResumeBasics(RRBaseModel):
     email: str | None = None
     headline: str | None = None
     phone: str | None = None
-    location: dict[str, Any] | None = None
+    location: dict[str, Any] | None = None  # pyright: ignore[reportExplicitAny]
     url: str | None = None
     summary: str | None = None
     photo: str | None = None
-    profiles: list[dict[str, Any]] = Field(default_factory=list)
+    profiles: list[dict[str, Any]] = Field(default_factory=list)  # pyright: ignore[reportExplicitAny]
 
 
 class ResumeSectionItem(RRBaseModel):
     id: str | None = None
     visible: bool | None = None
-    data: dict[str, Any] = Field(default_factory=dict)
+    data: dict[str, Any] = Field(default_factory=dict)  # pyright: ignore[reportExplicitAny]
 
 
 class ResumeSection(RRBaseModel):
