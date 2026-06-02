@@ -39,7 +39,34 @@
 </div>
 {% endif %}
 
-<div id="feedback-area" class="mt-6">
-  <p class="text-sm text-slate-400 italic">Feedback & regenerate form coming soon.</p>
+<div id="feedback-area" class="mt-8">
+  <h2 class="mb-3 text-sm font-semibold uppercase tracking-wider text-slate-400">Regenerate with Feedback</h2>
+  <form hx-post="/generate"
+        hx-target="#feedback-result"
+        hx-swap="innerHTML"
+        hx-indicator="#regen-spinner"
+        class="space-y-3">
+    <input type="hidden" name="generation_id" value="{{ generation.id }}">
+    <input type="hidden" name="base_resume_id" value="{{ generation.base_resume_id }}">
+    <textarea name="job_description" style="display:none">{{ job.description }}</textarea>
+    <div>
+      <label class="mb-1.5 block text-sm font-medium text-slate-700">
+        What would you like to change?
+      </label>
+      <textarea name="feedback" rows="4" required
+                placeholder="e.g. Make the summary shorter, emphasize Python skills, remove the internship from 2015…"
+                class="w-full resize-y rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"></textarea>
+    </div>
+    <div class="flex items-center gap-3">
+      <button type="submit"
+              class="rounded-lg bg-slate-800 px-4 py-2 text-sm font-medium text-white hover:bg-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-700 focus:ring-offset-2">
+        Regenerate
+      </button>
+      <span id="regen-spinner" class="htmx-indicator text-sm text-slate-500">
+        ⏳ Regenerating… this may take up to 90 seconds
+      </span>
+    </div>
+  </form>
+  <div id="feedback-result" class="mt-4"></div>
 </div>
 {% endblock %}
