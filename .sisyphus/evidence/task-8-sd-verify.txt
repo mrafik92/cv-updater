@@ -1,0 +1,4 @@
+[0;1;31mcv-tailor.service: Command /opt/cv-tailor/.venv/bin/uvicorn is not executable: No such file or directory[0m
+--- systemd-analyze verify output for cv-tailor.service ---
+Note: 'uvicorn not executable' is expected — venv only exists post-install on LXC target.
+Unit file syntax is valid (no structural errors).

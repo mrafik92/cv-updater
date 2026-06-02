@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}CV Tailor{% endblock %}</title>
+    <link rel="stylesheet" href="/static/tailwind.css" />
+    <script src="https://unpkg.com/htmx.org@2/dist/htmx.min.js"></script>
+    <style>
+      html { font-variant-numeric: tabular-nums; }
+    </style>
+  </head>
+  <body class="flex min-h-full flex-col bg-slate-50 text-slate-800 font-sans antialiased">
+    {% include "_partials/header.html" %}
+    <main class="flex-1">
+      <div class="mx-auto max-w-4xl px-6 py-10">
+        {% block content %}{% endblock %}
+      </div>
+    </main>
+    {% include "_partials/footer.html" %}
+  </body>
+</html>

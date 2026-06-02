@@ -1,0 +1,7 @@
+GET /static/tailwind.css
+Content-Length: 40050 bytes (>5000 required)
+Status: 200
+
+First 200 chars:
+/*! tailwindcss v4.3.0 | MIT License | https://tailwindcss.com */
+@layer properties{@supports (((-webkit-hyphens:none)) and (not (margin-trim:inline))) or ((-moz-orient:inline) and (not (color:rgb(fro

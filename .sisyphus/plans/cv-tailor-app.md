@@ -203,7 +203,7 @@ Max Concurrent: 8 (Wave 1)
 
 > Implementation + verification = ONE task. Every task ends with agent-executed QA scenarios.
 
-- [ ] 1. Project scaffold + pyproject + dir layout
+- [x] 1. Project scaffold + pyproject + dir layout
 
   **What to do**:
   - Create `pyproject.toml` (uv-managed, Python ≥3.12) with deps: `fastapi`, `uvicorn[standard]`, `httpx`, `jinja2`, `python-multipart`, `sqlalchemy>=2`, `alembic`, `pydantic-settings`, `playwright`, `structlog`. Dev deps: `ruff`.
@@ -257,7 +257,7 @@ Max Concurrent: 8 (Wave 1)
   Files: `pyproject.toml`, `cv_tailor/**`, `.gitignore`, `.env.example`, `scripts/precommit.sh`
   Pre-commit: `uv run ruff check .`
 
-- [ ] 2. Config module — pydantic-settings env loader
+- [x] 2. Config module — pydantic-settings env loader
 
   **What to do**:
   - Create `cv_tailor/config.py` with a `Settings(BaseSettings)` class (pydantic-settings).
@@ -304,7 +304,7 @@ Max Concurrent: 8 (Wave 1)
   **Commit**: YES — `feat(config): add pydantic-settings env loader`
   Files: `cv_tailor/config.py`, `.env.example`
 
-- [ ] 3. Pydantic models matching RR v5 resume JSON schema
+- [x] 3. Pydantic models matching RR v5 resume JSON schema
 
   **What to do**:
   - Create `cv_tailor/schemas/resume.py` with Pydantic v2 models mirroring the RR v5 resume JSON shape (basics, sections: summary, experience, education, skills, projects, certifications, languages, awards, references). Use `extra="allow"` on the root model so RR-side schema additions don't break us.
@@ -350,7 +350,7 @@ Max Concurrent: 8 (Wave 1)
   **Commit**: YES — `feat(schemas): add RR v5 resume pydantic models`
   Files: `cv_tailor/schemas/**`, `tests/fixtures/rr_sample.json`
 
-- [ ] 4. SQLite schema + Alembic init + first migration
+- [x] 4. SQLite schema + Alembic init + first migration
 
   **What to do**:
   - Initialize Alembic: `uv run alembic init migrations`. Configure `alembic.ini` and `migrations/env.py` to read `database_url` from `cv_tailor.config.get_settings()`.
@@ -403,7 +403,7 @@ Max Concurrent: 8 (Wave 1)
   **Commit**: YES — `feat(db): add SQLite schema + alembic migrations`
   Files: `alembic.ini`, `migrations/**`, `cv_tailor/db.py`, `cv_tailor/models.py`, `data/.gitkeep`
 
-- [ ] 5. Base Jinja templates + Tailwind setup
+- [x] 5. Base Jinja templates + Tailwind setup
 
   **What to do**:
   - Add Tailwind via the **standalone Tailwind CLI** (no Node toolchain required on LXC) — download binary in `scripts/install-tailwind.sh`, output to `cv_tailor/static/tailwind.css` from `cv_tailor/static/tailwind.src.css` watching templates.
@@ -453,7 +453,7 @@ Max Concurrent: 8 (Wave 1)
 
   **Commit**: YES — `feat(ui): add base Jinja templates + Tailwind`
 
-- [ ] 6. Structured logging setup
+- [x] 6. Structured logging setup
 
   **What to do**:
   - Create `cv_tailor/logging_setup.py` configuring `structlog` with JSON renderer in production (when `log_level != DEBUG`) and console renderer otherwise. Standard fields: `timestamp`, `level`, `event`, `logger`, plus contextvars for `request_id`.
@@ -499,7 +499,7 @@ Max Concurrent: 8 (Wave 1)
 
   **Commit**: YES — `feat(logging): add structured logging`
 
-- [ ] 7. RR v5 API endpoint research → docs/RR-API.md
+- [x] 7. RR v5 API endpoint research → docs/RR-API.md
 
   **What to do**:
   - Spawn `librarian` to investigate Reactive-Resume v5's HTTP API: list resumes, get resume by id, print/export to PDF, auth model.
@@ -539,7 +539,7 @@ Max Concurrent: 8 (Wave 1)
 
   **Commit**: YES — `docs(rr): document RR v5 API surface`
 
-- [ ] 8. systemd unit + README LXC install/update steps
+- [x] 8. systemd unit + README LXC install/update steps
 
   **What to do**:
   - Create `deploy/cv-tailor.service`:

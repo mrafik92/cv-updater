@@ -1,0 +1,11 @@
+INFO:     Started server process [156691]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8011 (Press CTRL+C to quit)
+{"method": "GET", "path": "/healthz", "event": "request_started", "request_id": "33befc1f-5bb3-4b85-b34b-eaf1299273b2", "logger": "cv_tailor.middleware", "level": "info", "timestamp": "2026-06-02T15:02:59.823740Z"}
+{"method": "GET", "path": "/healthz", "status_code": 200, "duration_ms": 6, "event": "request_finished", "request_id": "33befc1f-5bb3-4b85-b34b-eaf1299273b2", "logger": "cv_tailor.middleware", "level": "info", "timestamp": "2026-06-02T15:02:59.830051Z"}
+INFO:     127.0.0.1:51820 - "GET /healthz HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [156691]

@@ -6,3 +6,35 @@
 - Added sync SQLAlchemy/Alembic SQLite baseline with config-driven database URL and timestamp/index/constraint coverage.
 - SQLite JSON columns were mapped through SQLAlchemy JSON type; migration stores them as TEXT-compatible columns in SQLite.
 - Alembic round-trip validated with upgrade -> downgrade base -> upgrade head against data/cv_tailor.db.
+
+## T11 — tailor.py
+- `Resume` Pydantic model uses `extra="allow"` everywhere (RRBaseModel) — JSON Schema must mirror with `additionalProperties: true` at every level so any LLM output that round-trips through `Resume.model_validate` is also schema-valid.
+- `JobInput.description` is the only required field; `title`/`company` optional, included in user prompt only when present.
+- `build_user_prompt` always appends a regenerate-from-base reminder so feedback never causes drift onto a previous tailored output.
+- `tailor()` retries exactly once on `ValidationError`, appending the validation error to the prompt; second failure propagates.
+- `OpenRouterClient` import is `TYPE_CHECKING`-only — module imports cleanly even though `cv_tailor/services/openrouter.py` does not yet exist (T-?).
+- `jsonschema` was not in `pyproject.toml`; added via `uv add jsonschema`.
+
+## T9 — RR v5 API Client (2026-06-02)
+
+### Endpoints used
+- `GET /api/rpc/resumes`       → `resume.list` (metadata, no `data` field)
+- `GET /api/rpc/resumes/{id}`  → `resume.getById` (full resume incl. `data`)
+- `GET /api/rpc/resumes/{id}/pdf` → streams PDF directly (no separate signed-URL step when using API key)
+
+### Auth
+- `x-api-key` header is the primary / highest-priority method in RR v5.
+- `Authorization: Bearer` works too but is lower priority.
+
+### Field mapping
+- RR returns `name` and `updatedAt` (camelCase); we expose `title` and `updated_at` via `_normalise_resume_meta`.
+
+### Retry strategy
+- Single retry on 5xx only, 0.5 s sleep. No retry on 4xx.
+
+### Virtualenv
+- Project uses `.venv/` — invoke as `.venv/bin/python` not system python.
+
+### Stub server
+- Port 9911, auto-kills after 60 s.
+- Routes: `/api/rpc/resumes`, `/api/rpc/resumes/r1`, `auth-fail` (401), `unavailable` (503).

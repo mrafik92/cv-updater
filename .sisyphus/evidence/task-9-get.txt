@@ -1,0 +1,6 @@
+2026-06-02 17:13:49 [info     ] rr_client.response             attempt=1 duration_ms=49 method=GET status_code=200 url=http://127.0.0.1:9911/api/rpc/resumes/r1
+{
+  "id": "r1",
+  "name": "My CV",
+  "has_data": true
+}

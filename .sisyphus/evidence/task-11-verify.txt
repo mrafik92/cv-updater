@@ -1,0 +1,4 @@
+Schema valid
+All 7 rules present
+build_user_prompt OK
+rr_sample.json validates against schema and Resume model

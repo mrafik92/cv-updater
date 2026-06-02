@@ -1,0 +1,2 @@
+2026-06-02 17:13:49 [info     ] rr_client.response             attempt=1 duration_ms=45 method=GET status_code=401 url=http://127.0.0.1:9911/api/rpc/resumes/auth-fail
+RRAuthError raised: Auth failed HTTP 401: http://127.0.0.1:9911/api/rpc/resumes/auth-fail

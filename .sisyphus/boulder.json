@@ -9,7 +9,11 @@
     "ses_1772890f6ffebtVFKFo7gH7VBt",
     "ses_177284388ffeF5jZUAO8wLWD20",
     "ses_177280264ffe2m8xMZwXYchfET",
-    "ses_17727c605ffeobubwNRk8sRkUa"
+    "ses_17727c605ffeobubwNRk8sRkUa",
+    "ses_17727833fffeGpb0f8hAUM8s4l",
+    "ses_17720a760ffeUxgphrrqjNT3XT",
+    "ses_177206752ffeCddrH5fcxqb78D",
+    "ses_1772004b7ffel5bRg5MWgjEUCB"
   ],
   "session_origins": {
     "ses_17757d034ffe4lLC4BUUL6wcfZ": "direct",
@@ -19,7 +23,11 @@
     "ses_1772890f6ffebtVFKFo7gH7VBt": "appended",
     "ses_177284388ffeF5jZUAO8wLWD20": "appended",
     "ses_177280264ffe2m8xMZwXYchfET": "appended",
-    "ses_17727c605ffeobubwNRk8sRkUa": "appended"
+    "ses_17727c605ffeobubwNRk8sRkUa": "appended",
+    "ses_17727833fffeGpb0f8hAUM8s4l": "appended",
+    "ses_17720a760ffeUxgphrrqjNT3XT": "appended",
+    "ses_177206752ffeCddrH5fcxqb78D": "appended",
+    "ses_1772004b7ffel5bRg5MWgjEUCB": "appended"
   },
   "plan_name": "cv-tailor-app",
   "agent": "atlas",
@@ -28,10 +36,19 @@
       "task_key": "todo:1",
       "task_label": "1",
       "task_title": "Project scaffold + pyproject + dir layout",
-      "session_id": "ses_17727c605ffeobubwNRk8sRkUa",
+      "session_id": "ses_1772890f6ffebtVFKFo7gH7VBt",
+      "agent": "Sisyphus-Junior",
+      "category": "quick",
+      "updated_at": "2026-06-02T15:04:21.244Z"
+    },
+    "todo:9": {
+      "task_key": "todo:9",
+      "task_label": "9",
+      "task_title": "RR v5 API client (fetch base resume + print)",
+      "session_id": "ses_17720a760ffeUxgphrrqjNT3XT",
       "agent": "Sisyphus-Junior",
       "category": "unspecified-high",
-      "updated_at": "2026-06-02T14:58:52.738Z"
+      "updated_at": "2026-06-02T15:39:19.281Z"
     }
   }
 }
