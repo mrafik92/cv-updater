@@ -18,7 +18,7 @@ from cv_tailor.services.repo import (
     get_or_create_generation,
 )
 from cv_tailor.services.rr_client import RRClient, RRClientError
-from cv_tailor.services.tailor import tailor
+from cv_tailor.services.tailor import FabricationError, tailor
 
 log = structlog.get_logger(__name__)
 router = APIRouter()
@@ -119,6 +119,13 @@ async def generate(
             "_partials/generate_result.html",
             {"error": f"Could not fetch resume from Reactive Resume: {exc}", "version": None},
             status_code=502,
+        )
+    except FabricationError as exc:
+        log.warning("fabrication_detected", error=str(exc))
+        return templates.TemplateResponse(
+            request, "_partials/generate_result.html",
+            {"error": f"Generation rejected: AI added content not in your original resume. Please try again. ({exc})", "version": None},
+            status_code=422,
         )
     except OpenRouterError as exc:
         log.warning("openrouter_error", error=str(exc))

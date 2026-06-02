@@ -12,6 +12,35 @@ if TYPE_CHECKING:
     from cv_tailor.services.openrouter import OpenRouterClient
 
 
+class FabricationError(Exception):
+    pass
+
+
+def _extract_employers(resume: dict) -> set[str]:
+    names: set[str] = set()
+    sections = resume.get("sections", {})
+    for section_key in ("experience", "education"):
+        section = sections.get(section_key, {})
+        for item in section.get("items", []):
+            data = item.get("data", {})
+            for field in ("company", "institution", "name"):
+                val = data.get(field, "")
+                if val and isinstance(val, str):
+                    names.add(val.strip().lower())
+    return names
+
+
+def verify_truthfulness(base: dict, tailored: dict) -> None:
+    """Raises FabricationError if tailored resume adds employers/institutions not present in base."""
+    base_employers = _extract_employers(base)
+    tailored_employers = _extract_employers(tailored)
+    fabricated = tailored_employers - base_employers
+    if fabricated:
+        raise FabricationError(
+            f"Tailored resume contains fabricated employers/institutions not in base resume: {fabricated}"
+        )
+
+
 SYSTEM_PROMPT: str = """You are a resume tailoring assistant. Follow these rules strictly:
 
 1. You tailor an existing resume to a job description. You may rephrase, reorder, and emphasize. You MAY NOT invent.
@@ -153,4 +182,13 @@ async def tailor(
         )
         result = await client.generate_json(SYSTEM_PROMPT, retry_prompt, RR_RESUME_JSON_SCHEMA)
         Resume.model_validate(result)
+    try:
+        verify_truthfulness(base_resume, result)
+    except FabricationError:
+        feedback_with_warning = list(cumulative_feedback or []) + [
+            "CRITICAL: Do NOT add any employer, company, institution, or degree that is not in the original resume."
+        ]
+        retry_prompt = build_user_prompt(base_resume, job, feedback_with_warning)
+        result = await client.generate_json(SYSTEM_PROMPT, retry_prompt, RR_RESUME_JSON_SCHEMA)
+        verify_truthfulness(base_resume, result)
     return result
