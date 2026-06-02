@@ -1,0 +1,1 @@
+"""CV Tailor app package."""

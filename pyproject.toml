@@ -1,0 +1,24 @@
+[project]
+name = "cv-tailor-app"
+version = "0.1.0"
+description = "FastAPI CV tailoring scaffold"
+requires-python = ">=3.12"
+dependencies = [
+  "fastapi",
+  "uvicorn[standard]",
+  "httpx",
+  "jinja2",
+  "python-multipart",
+  "sqlalchemy>=2",
+  "alembic",
+  "pydantic-settings",
+  "playwright",
+  "structlog",
+]
+
+[dependency-groups]
+dev = ["ruff"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
