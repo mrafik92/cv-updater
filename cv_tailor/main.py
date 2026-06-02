@@ -1,3 +1,5 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -7,6 +9,7 @@ from starlette.requests import Request
 from .config import get_settings
 from .logging_setup import configure_logging
 from .middleware import RequestIDMiddleware
+from .services.pdf import shutdown_pdf, startup_pdf
 
 try:
     configure_logging(get_settings().log_level)
@@ -14,7 +17,14 @@ except Exception:
     configure_logging("INFO")
 
 
-app = FastAPI(middleware=[Middleware(RequestIDMiddleware)])
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await startup_pdf()
+    yield
+    await shutdown_pdf()
+
+
+app = FastAPI(middleware=[Middleware(RequestIDMiddleware)], lifespan=lifespan)
 
 app.mount("/static", StaticFiles(directory="cv_tailor/static"), name="static")
 templates = Jinja2Templates(directory="cv_tailor/templates")
@@ -28,3 +38,10 @@ def healthz() -> dict[str, str]:
 @app.get("/")
 async def index(request: Request):
     return templates.TemplateResponse(request, "index.html")
+
+
+@app.get("/history")
+async def history(request: Request):
+    return templates.TemplateResponse(
+        request, "history.html", {"generations": []}
+    )
