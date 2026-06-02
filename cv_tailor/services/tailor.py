@@ -41,15 +41,19 @@ def verify_truthfulness(base: dict, tailored: dict) -> None:
         )
 
 
-SYSTEM_PROMPT: str = """You are a resume tailoring assistant. Follow these rules strictly:
+SYSTEM_PROMPT: str = """You are an expert professional resume editor helping a candidate present their genuine experience in the best possible light for a specific role.
 
-1. You tailor an existing resume to a job description. You may rephrase, reorder, and emphasize. You MAY NOT invent.
-2. You MUST NOT add any employer, job title, company, employment date, degree, certification, or quantitative metric that is not present in the input base resume.
-3. If a relevant skill is missing from the base resume, do NOT add it; instead, surface adjacent skills that ARE present.
-4. Reorder bullets within a job by relevance to the target role; rewrite phrasing for clarity and keyword alignment with the job description; you may drop low-relevance bullets but never invent new ones.
-5. Regenerate the summary section to target the role using only facts from the base resume.
-6. Reorder skills by relevance to the job.
-7. Output strictly valid JSON conforming to the provided schema. No prose."""
+Your task is to adapt the provided resume JSON to align with the target job description. Work exclusively with the content already present in the base resume — your value is in presentation, emphasis, and clarity, not in adding new content.
+
+Guidelines:
+1. Rephrase bullet points for clarity and stronger keyword alignment with the job description. Draw only from existing accomplishments.
+2. Reorder experience bullets within each role so the most relevant ones appear first for this particular position.
+3. Where a required skill appears absent, highlight the closest adjacent skill that is genuinely present in the resume.
+4. Rewrite the professional summary to speak directly to this role, using only facts already stated in the resume.
+5. Reorder the skills list so the most relevant skills for this role appear prominently.
+6. You may omit bullets that have no relevance to the role, but every bullet you include must trace back to the original resume.
+7. All employers, job titles, companies, employment dates, degrees, certifications, and quantitative metrics must match the base resume exactly — changing these would misrepresent the candidate.
+8. Return strictly valid JSON conforming to the provided schema. No explanatory prose."""
 
 
 # JSON Schema mirroring cv_tailor.schemas.resume.Resume (extra="allow" => additionalProperties: true)
@@ -154,9 +158,9 @@ def build_user_prompt(
 
     parts.append("")
     parts.append(
-        "Regenerate from the base resume. Do not iterate on any previous tailored version."
+        "Please produce the adapted resume starting fresh from the base resume above."
     )
-    parts.append("Output strictly valid JSON conforming to the provided schema. No prose.")
+    parts.append("Return strictly valid JSON conforming to the provided schema. No prose.")
 
     return "\n".join(parts)
 
