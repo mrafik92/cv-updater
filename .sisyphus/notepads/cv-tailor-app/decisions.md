@@ -7,3 +7,7 @@
 - Versions: immutable rows; feedback stored per version
 - No auth, no multi-user, no pytest
 - Deployment: systemd unit, git pull + alembic upgrade head + systemctl restart
+
+## Schema decisions
+- Use `ConfigDict(extra="allow")` on all schema models to tolerate future RR additions.
+- Keep section item payloads flexible with `dict[str, Any]` so RR field drift does not break parsing.
