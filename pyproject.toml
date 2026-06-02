@@ -15,6 +15,7 @@ dependencies = [
   "playwright",
   "structlog",
   "jsonschema>=4.26.0",
+  "deepdiff>=9.1.0",
 ]
 
 [dependency-groups]

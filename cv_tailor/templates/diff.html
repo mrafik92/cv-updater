@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}CV Tailor — Diff v{{ version_a.version_number }} → v{{ version_b.version_number }}{% endblock %}
+{% block content %}
+<div class="mb-4 flex items-center gap-2 text-sm text-slate-500">
+  <a href="/history" class="hover:text-indigo-600">← History</a>
+  <span>/</span>
+  <span class="font-medium text-slate-700">
+    Diff: v{{ version_a.version_number }} → v{{ version_b.version_number }}
+  </span>
+</div>
+
+<h1 class="mb-6 text-xl font-semibold text-slate-800">
+  Changes: Version {{ version_a.version_number }} → {{ version_b.version_number }}
+</h1>
+
+{% if diff.field_changes %}
+<div class="mb-8 space-y-2">
+  <h2 class="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-400">Field Changes ({{ diff.field_changes|length }})</h2>
+  {% for change in diff.field_changes %}
+  <div class="rounded-lg border px-4 py-2 text-sm
+    {% if change.change_type == 'added' %}border-green-200 bg-green-50
+    {% elif change.change_type == 'removed' %}border-red-200 bg-red-50
+    {% else %}border-amber-200 bg-amber-50{% endif %}">
+    <code class="font-mono text-xs text-slate-600">{{ change.path }}</code>
+    {% if change.change_type == 'changed' %}
+    <div class="mt-1 grid grid-cols-2 gap-2 text-xs">
+      <div class="text-red-700"><span class="font-medium">Before:</span> {{ change.old_value }}</div>
+      <div class="text-green-700"><span class="font-medium">After:</span> {{ change.new_value }}</div>
+    </div>
+    {% else %}
+    <span class="ml-2 text-xs font-medium
+      {% if change.change_type == 'added' %}text-green-700{% else %}text-red-700{% endif %}">
+      {{ change.change_type }}
+    </span>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<p class="mb-6 text-sm text-slate-400">No field-level differences found.</p>
+{% endif %}
+
+{% if diff.text_unified %}
+<div>
+  <h2 class="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-400">Unified Diff</h2>
+  <pre class="overflow-x-auto rounded-xl bg-slate-900 p-4 text-xs text-slate-300 leading-relaxed">{{ diff.text_unified }}</pre>
+</div>
+{% endif %}
+{% endblock %}

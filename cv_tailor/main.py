@@ -9,6 +9,7 @@ from starlette.requests import Request
 from .config import get_settings
 from .logging_setup import configure_logging
 from .middleware import RequestIDMiddleware
+from .routes.diff import router as diff_router
 from .routes.generate import router as generate_router
 from .routes.history import router as history_router
 from .routes.pdf import router as pdf_router
@@ -34,6 +35,7 @@ app.include_router(generate_router)
 app.include_router(pdf_router)
 app.include_router(resumes_router)
 app.include_router(history_router)
+app.include_router(diff_router)
 app.mount("/static", StaticFiles(directory="cv_tailor/static"), name="static")
 templates = Jinja2Templates(directory="cv_tailor/templates")
 
