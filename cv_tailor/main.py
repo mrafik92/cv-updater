@@ -9,6 +9,7 @@ from starlette.requests import Request
 from .config import get_settings
 from .logging_setup import configure_logging
 from .middleware import RequestIDMiddleware
+from .routes.generate import router as generate_router
 from .services.pdf import shutdown_pdf, startup_pdf
 
 try:
@@ -26,6 +27,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(middleware=[Middleware(RequestIDMiddleware)], lifespan=lifespan)
 
+app.include_router(generate_router)
 app.mount("/static", StaticFiles(directory="cv_tailor/static"), name="static")
 templates = Jinja2Templates(directory="cv_tailor/templates")
 

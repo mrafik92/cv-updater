@@ -1,0 +1,19 @@
+{% if error %}
+<div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+  <strong>Error:</strong> {{ error }}
+</div>
+{% elif version %}
+<div class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+  <strong>Version {{ version.version_number }} generated!</strong>
+  <div class="mt-2 flex gap-3">
+    <a href="/pdf/{{ version.id }}" target="_blank"
+       class="inline-block rounded bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-700">
+      Download PDF
+    </a>
+    <a href="/version/{{ version.id }}"
+       class="inline-block rounded border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50">
+      View Details
+    </a>
+  </div>
+</div>
+{% endif %}

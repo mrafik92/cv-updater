@@ -1,0 +1,21 @@
+Task: T15 — POST /generate route
+Date: 2026-06-02
+
+QA Test Command:
+  curl -s -o /tmp/gen_result.html -w "%{http_code}" -X POST http://localhost:8767/generate \
+    -d 'job_description=Software+Engineer&base_resume_id=test-id'
+
+Result:
+  HTTP Status: 502 (expected — RR unreachable)
+  Body:
+  <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+    <strong>Error:</strong> Could not fetch resume from Reactive Resume: Timeout: http://localhost/api/rpc/resumes/test-id
+  </div>
+
+Files created:
+  - cv_tailor/routes/__init__.py
+  - cv_tailor/routes/generate.py
+  - cv_tailor/templates/_partials/generate_result.html
+  - cv_tailor/main.py (wired generate_router)
+
+Ruff: All checks passed
