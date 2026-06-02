@@ -17,7 +17,10 @@ def get_engine():
     return create_engine(get_settings().database_url, future=True)
 
 
-SessionLocal = sessionmaker(bind=get_engine(), class_=Session, autoflush=False, autocommit=False)
+engine = get_engine()
+
+
+SessionLocal = sessionmaker(bind=engine, class_=Session, autoflush=False, autocommit=False)
 
 
 @contextmanager

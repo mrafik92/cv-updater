@@ -38,3 +38,14 @@
 ### Stub server
 - Port 9911, auto-kills after 60 s.
 - Routes: `/api/rpc/resumes`, `/api/rpc/resumes/r1`, `auth-fail` (401), `unavailable` (503).
+
+## T10 — OpenRouterClient
+- `httpx.AsyncClient` used as async context manager inside the method (not stored on self) — keeps the client stateless and avoids connection-pool leaks across requests.
+- Retry loop appends assistant + user correction messages to the conversation so the model sees its own bad output before retrying.
+- `json_schema` response_format with `strict: true` enforces structured output on compatible models.
+- Evidence: `.sisyphus/evidence/task-10-import.txt` — import exits 0.
+
+## T13 — repository layer
+- `db.flush()` is enough to materialize PKs for newly created Job/Generation/Version rows before commit.
+- `get_or_create_generation` should key idempotency on `(job_id, base_resume_id)` so repeated calls reuse the same generation row.
+- `version_number` must be derived from the latest version within a generation, not from the global table.
