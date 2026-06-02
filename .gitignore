@@ -19,3 +19,6 @@ build/
 # Tailwind CSS standalone CLI binary
 tailwindcss
 tailwindcss-*
+
+# Internal orchestration data
+.sisyphus/
