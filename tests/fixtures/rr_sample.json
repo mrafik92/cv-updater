@@ -1,123 +1,24 @@
 {
-  "basics": {
-    "name": "John Doe",
-    "email": "john.doe@example.com",
-    "headline": "Software Engineer",
-    "phone": "+1-555-0100",
-    "location": {
-      "address": "123 Main St",
-      "city": "Austin",
-      "region": "TX",
-      "countryCode": "US"
+  "id": "r1",
+  "name": "My CV",
+  "slug": "my-cv",
+  "tags": [],
+  "isPublic": false,
+  "isLocked": false,
+  "hasPassword": false,
+  "updatedAt": "2026-01-01T00:00:00.000Z",
+  "data": {
+    "basics": {
+      "name": "Jane Doe",
+      "email": "jane@example.com",
+      "headline": "Senior Engineer",
+      "phone": "+1-555-0100",
+      "location": {"city": "San Francisco", "country": "US"},
+      "url": "https://janedoe.dev",
+      "summary": "Experienced software engineer.",
+      "photo": null,
+      "profiles": []
     },
-    "url": "https://example.com/john-doe",
-    "summary": "Software engineer with experience in web applications.",
-    "photo": "https://example.com/photo.jpg",
-    "profiles": [
-      {
-        "network": "LinkedIn",
-        "username": "johndoe",
-        "url": "https://linkedin.com/in/johndoe"
-      }
-    ]
-  },
-  "sections": {
-    "summary": {
-      "name": "Summary",
-      "columns": 1,
-      "visible": true,
-      "items": [
-        {
-          "id": "summary-1",
-          "visible": true,
-          "data": {
-            "text": "Software engineer focused on backend and product quality."
-          }
-        }
-      ]
-    },
-    "experience": {
-      "name": "Experience",
-      "columns": 1,
-      "visible": true,
-      "items": [
-        {
-          "id": "exp-1",
-          "visible": true,
-          "data": {
-            "company": "Acme Corp",
-            "position": "Senior Software Engineer",
-            "date": "2022 - Present",
-            "summary": "Built internal tools and improved release reliability.",
-            "highlights": [
-              "Reduced deploy failures by 35%",
-              "Led migration to automated testing"
-            ]
-          }
-        }
-      ]
-    },
-    "education": {
-      "name": "Education",
-      "columns": 1,
-      "visible": true,
-      "items": [
-        {
-          "id": "edu-1",
-          "visible": true,
-          "data": {
-            "institution": "State University",
-            "area": "Computer Science",
-            "studyType": "BSc",
-            "date": "2016 - 2020"
-          }
-        }
-      ]
-    },
-    "skills": {
-      "name": "Skills",
-      "columns": 1,
-      "visible": true,
-      "items": [
-        {
-          "id": "skill-1",
-          "visible": true,
-          "data": {
-            "name": "Python",
-            "keywords": ["FastAPI", "Pydantic", "SQLAlchemy"]
-          }
-        }
-      ]
-    },
-    "projects": {
-      "name": "Projects",
-      "columns": 1,
-      "visible": true,
-      "items": []
-    },
-    "certifications": {
-      "name": "Certifications",
-      "columns": 1,
-      "visible": true,
-      "items": []
-    },
-    "languages": {
-      "name": "Languages",
-      "columns": 1,
-      "visible": true,
-      "items": []
-    },
-    "awards": {
-      "name": "Awards",
-      "columns": 1,
-      "visible": true,
-      "items": []
-    },
-    "references": {
-      "name": "References",
-      "columns": 1,
-      "visible": true,
-      "items": []
-    }
+    "sections": {}
   }
 }
