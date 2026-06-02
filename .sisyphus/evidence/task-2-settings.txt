@@ -1,0 +1,9 @@
+Verification evidence for task 2 (config module).
+
+1) Settings load with required env vars:
+   command: OPENROUTER_API_KEY=test-key RR_BASE_URL=http://10.0.0.8:3000 RR_API_TOKEN=rr-token uv run python -c "from cv_tailor.config import get_settings; get_settings.cache_clear(); s = get_settings(); print(s.app_host, s.app_port, s.database_url, s.openrouter_model, s.openrouter_base_url, s.rr_base_url, s.log_level, s.pdf_timeout_seconds); print(type(s.openrouter_api_key).__name__, type(s.rr_api_token).__name__)"
+   result: printed defaults and `SecretStr SecretStr`
+
+2) Missing required env vars fail validation:
+   command: env -i HOME=$HOME PATH=$PATH uv run python -c "from cv_tailor.config import get_settings; get_settings.cache_clear(); get_settings()" 2>&1 | grep -i "validation" && echo "ok"
+   result: emitted pydantic ValidationError mentioning missing fields
