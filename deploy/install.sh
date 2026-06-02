@@ -2,7 +2,7 @@
 # deploy/install.sh — Idempotent install script for cv-tailor on Debian/Ubuntu LXC
 set -euo pipefail
 
-REPO_URL="https://github.com/mrafik/cv-updater"
+REPO_URL="https://github.com/mrafik92/cv-updater"
 INSTALL_DIR="/opt/cv-tailor"
 SERVICE_USER="cvtailor"
 SERVICE_FILE="deploy/cv-tailor.service"
