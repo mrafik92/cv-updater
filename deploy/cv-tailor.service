@@ -1,0 +1,15 @@
+[Unit]
+Description=CV Tailor — resume tailoring web app
+After=network.target
+
+[Service]
+Type=simple
+User=cvtailor
+WorkingDirectory=/opt/cv-tailor
+EnvironmentFile=/opt/cv-tailor/.env
+ExecStart=/opt/cv-tailor/.venv/bin/uvicorn cv_tailor.main:app --host 127.0.0.1 --port 8000
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
