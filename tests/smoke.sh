@@ -13,10 +13,10 @@ check() {
   actual=$(curl -s -o /dev/null -w "%{http_code}" "$@")
   if [ "$actual" = "$expected" ]; then
     echo "  PASS [$actual] $desc"
-    ((PASS++))
+    PASS=$((PASS+1))
   else
     echo "  FAIL [$actual != $expected] $desc"
-    ((FAIL++))
+    FAIL=$((FAIL+1))
   fi
 }
 
@@ -27,11 +27,11 @@ check_body() {
   body=$(curl -fsS "$@" 2>/dev/null || true)
   if echo "$body" | grep -qi "$pattern"; then
     echo "  PASS [body~=$pattern] $desc"
-    ((PASS++))
+    PASS=$((PASS+1))
   else
     echo "  FAIL [pattern '$pattern' not found] $desc"
     echo "    body: ${body:0:200}"
-    ((FAIL++))
+    FAIL=$((FAIL+1))
   fi
 }
 
