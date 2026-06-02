@@ -5,15 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{% block title %}CV Tailor{% endblock %}</title>
     <link rel="stylesheet" href="/static/tailwind.css" />
-    <script src="https://unpkg.com/htmx.org@2/dist/htmx.min.js"></script>
+    <script src="https://unpkg.com/htmx.org@2/dist/htmx.min.js" defer></script>
     <style>
       html { font-variant-numeric: tabular-nums; }
     </style>
   </head>
-  <body class="flex min-h-full flex-col bg-slate-50 text-slate-800 font-sans antialiased">
+  <body class="flex min-h-full flex-col bg-slate-50 font-sans text-slate-900 antialiased">
     {% include "_partials/header.html" %}
     <main class="flex-1">
-      <div class="mx-auto max-w-4xl px-6 py-10">
+      <div class="mx-auto max-w-4xl px-4 py-8">
+        {% include "_partials/flash.html" ignore missing %}
         {% block content %}{% endblock %}
       </div>
     </main>

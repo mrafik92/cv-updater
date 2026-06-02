@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}CV Tailor — History{% endblock %}
+{% block content %}
+<h1 class="mb-6 text-xl font-semibold text-slate-800">Generation History</h1>
+{% if generations %}
+  {# Filled by T18 #}
+{% else %}
+<div class="py-16 text-center text-slate-400">
+  <p class="text-lg">No generations yet.</p>
+  <p class="mt-2 text-sm"><a href="/" class="text-indigo-500 hover:underline">Create your first tailored resume →</a></p>
+</div>
+{% endif %}
+{% endblock %}
