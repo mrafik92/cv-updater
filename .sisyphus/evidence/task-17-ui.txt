@@ -1,0 +1,9 @@
+=== GET / ===
+        hx-post="/generate"
+      <select name="base_resume_id" id="resume-select" required
+    <!-- Job description textarea -->
+      <textarea name="job_description" required rows="12"
+                class="w-full resize-y rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"></textarea>
+        Generate Resume
+=== GET /resumes ===
+{"resumes":[],"error":"Timeout: http://localhost/api/rpc/resumes"}

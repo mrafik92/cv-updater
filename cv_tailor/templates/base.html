@@ -8,6 +8,9 @@
     <script src="https://unpkg.com/htmx.org@2/dist/htmx.min.js" defer></script>
     <style>
       html { font-variant-numeric: tabular-nums; }
+      .htmx-indicator { display: none; }
+      .htmx-request .htmx-indicator { display: inline; }
+      .htmx-request.htmx-indicator { display: inline; }
     </style>
   </head>
   <body class="flex min-h-full flex-col bg-slate-50 font-sans text-slate-900 antialiased">
