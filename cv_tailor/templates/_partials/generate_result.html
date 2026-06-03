@@ -14,6 +14,44 @@
        class="inline-block rounded border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50">
       View Details
     </a>
+    <button onclick="pushToRR({{ version.id }})"
+       class="inline-block rounded bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-emerald-700"
+       id="push-btn-{{ version.id }}">
+      Push to RR
+    </button>
   </div>
+  <div id="push-result-{{ version.id }}" class="mt-2 hidden"></div>
 </div>
+
+<script>
+function pushToRR(versionId) {
+  const btn = document.getElementById('push-btn-' + versionId);
+  const result = document.getElementById('push-result-' + versionId);
+  btn.disabled = true;
+  btn.textContent = 'Pushing...';
+  result.className = 'mt-2';
+  result.textContent = '';
+
+  fetch('/push/' + versionId, { method: 'POST' })
+    .then(r => r.json())
+    .then(d => {
+      if (d.error) {
+        result.className = 'mt-2 text-red-600';
+        result.textContent = 'Error: ' + d.error;
+        btn.disabled = false;
+        btn.textContent = 'Push to RR';
+      } else {
+        result.className = 'mt-2 text-green-700';
+        result.textContent = 'Pushed to RR (' + d.action + ') — ID: ' + d.id;
+        btn.textContent = 'Pushed ✓';
+      }
+    })
+    .catch(e => {
+      result.className = 'mt-2 text-red-600';
+      result.textContent = 'Error: ' + e;
+      btn.disabled = false;
+      btn.textContent = 'Push to RR';
+    });
+}
+</script>
 {% endif %}

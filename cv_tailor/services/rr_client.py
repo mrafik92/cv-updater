@@ -66,6 +66,52 @@ class RRClient:
             resume.setdefault("basics", {})["summary"] = summary["content"]
         return resume
 
+    @staticmethod
+    def _prepare_data(data: dict[str, Any]) -> dict[str, Any]:
+        prepared = dict(data)
+        summary_text = prepared.get("basics", {}).pop("summary", None)
+        if summary_text and "summary" not in prepared:
+            prepared["summary"] = {"title": "Summary", "columns": 1, "hidden": False, "content": summary_text}
+        return prepared
+
+    async def update_resume(self, resume_id: str, data: dict[str, Any]) -> dict[str, Any]:
+        raw = await self._rpc("getById", {"id": resume_id})
+        if not isinstance(raw, dict):
+            raise RRClientError(f"Unexpected get_resume response shape: {type(raw)}")
+        prepared = self._prepare_data(data)
+        existing_data = raw.get("data", {})
+        existing_data["basics"] = prepared.get("basics", existing_data.get("basics", {}))
+        existing_data["sections"] = prepared.get("sections", existing_data.get("sections", {}))
+        existing_data["summary"] = prepared.get("summary", existing_data.get("summary", {}))
+        existing_data["metadata"] = prepared.get("metadata", existing_data.get("metadata", {}))
+        result = await self._rpc("update", raw)
+        if not isinstance(result, dict):
+            raise RRClientError(f"Unexpected update_resume response shape: {type(result)}")
+        return result
+
+    async def create_resume(self, name: str, slug: str, data: dict[str, Any]) -> str:
+        slug = slug or name.lower().replace(" ", "-")
+        result = await self._rpc("create", {
+            "name": name,
+            "slug": slug,
+            "tags": [],
+            "withSampleData": False,
+        })
+        if not isinstance(result, str):
+            raise RRClientError(f"Unexpected create_resume response: expected string id, got {type(result)}")
+        new_id = result
+        prepared = self._prepare_data(data)
+        raw = await self._rpc("getById", {"id": new_id})
+        if not isinstance(raw, dict):
+            raise RRClientError(f"Unexpected get_resume after create: {type(raw)}")
+        existing_data = raw.get("data", {})
+        existing_data["basics"] = prepared.get("basics", existing_data.get("basics", {}))
+        existing_data["sections"] = prepared.get("sections", existing_data.get("sections", {}))
+        existing_data["summary"] = prepared.get("summary", existing_data.get("summary", {}))
+        existing_data["metadata"] = prepared.get("metadata", existing_data.get("metadata", {}))
+        await self._rpc("update", raw)
+        return new_id
+
     async def _rpc(self, procedure: str, payload: dict[str, Any]) -> Any:
         url = f"{self._api_base}/{procedure}"
         body = {"json": payload} if payload else {"json": {}}
