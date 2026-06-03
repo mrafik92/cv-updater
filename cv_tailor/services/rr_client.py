@@ -60,7 +60,7 @@ class RRClient:
         raw = await self._rpc("getById", {"id": resume_id})
         if not isinstance(raw, dict):
             raise RRClientError(f"Unexpected get_resume response shape: {type(raw)}")
-        return raw
+        return raw.get("data", raw)
 
     async def _rpc(self, procedure: str, payload: dict[str, Any]) -> Any:
         url = f"{self._api_base}/{procedure}"

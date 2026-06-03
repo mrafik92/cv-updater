@@ -53,6 +53,10 @@ async def render_pdf(resume: dict, *, timeout_seconds: int | None = None) -> byt
         raise PDFRendererUnavailable("Call startup_pdf() first")
     if timeout_seconds is None:
         timeout_seconds = get_settings().pdf_timeout_seconds
+
+    if "data" in resume and isinstance(resume["data"], dict):
+        resume = resume["data"]
+
     env = Environment(
         loader=FileSystemLoader(str(_TEMPLATES_DIR)),
         autoescape=select_autoescape(["html"]),
