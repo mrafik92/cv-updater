@@ -105,36 +105,28 @@ Source: `packages/api/src/context.ts:69-86`
 
 **Source**: `apps/server/src/rpc/handler.ts:1-20`
 
-All business-logic endpoints go through `POST /api/rpc` or REST-style `GET/POST /api/rpc{path}`.
+**Verified on live instance (2026-06-03):** RR v5 uses **POST** to `/api/rpc/resume/{procedure}` with
+an oRPC JSON-RPC envelope `{"json": <payload>}`. Responses are wrapped in `{"json": <data>}`.
+The plural `resumes` REST path and batch handler were **not available** on this deployment.
 
-### Standard oRPC call (POST to procedure key path)
+### Working format
 ```
-POST /api/rpc/{router}.{procedure}
+POST /api/rpc/resume/{procedure}
 Content-Type: application/json
+x-api-key: <api-key>
 
-{"input": { ...payload }}
-```
-
-### REST-style call (defined by `.route()` decorator)
-Each procedure defines a `.route({ method, path })` that maps to a REST path under `/api/rpc`:
-```
-GET /api/rpc/resumes          → resume.list
-GET /api/rpc/resumes/{id}     → resume.getById
-POST /api/rpc/resumes         → resume.create
-...etc
+{"json": { ...payload }}
 ```
 
-### Batch requests
-Multiple calls in one HTTP round-trip (via `BatchHandlerPlugin`):
-```
-POST /api/rpc
-Content-Type: application/json
+### Known working procedures (this deployment)
+| Procedure | Path | Payload |
+|-----------|------|---------|
+| `resume.list` | `POST /api/rpc/resume/list` | `{"json": {}}` |
+| `resume.getById` | `POST /api/rpc/resume/getById` | `{"json": {"id": "..."}}` |
 
-[
-  {"procedure": "resume/list", "input": {}},
-  {"procedure": "resume/getById", "input": {"id": "abc123"}}
-]
-```
+> **Note:** `GET /api/rpc/resume/list` (no POST body) also works for listing.
+> `GET /api/rpc/resume/getById`, `GET /api/rpc/resumes`, `POST /api/rpc` (batch),
+> `GET /api/openapi`, and `GET /api/rpc/resumes/{id}/pdf` all returned **404** on this instance.
 
 ---
 
@@ -192,8 +184,8 @@ All resume CRUD procedures require authentication (`protectedProcedure`).
 
 | oRPC Procedure | Method | Path | Auth | Description |
 |---------------|--------|------|------|-------------|
-| `resume.list` | GET | `/resumes` | Required | List user's resumes (metadata only, no `data` field) |
-| `resume.getById` | GET | `/resumes/{id}` | Required | Get full resume by ID (includes `data`) |
+| `resume.list` | POST | `/resume/list` | Required | List user's resumes (metadata only, no `data` field) |
+| `resume.getById` | POST | `/resume/getById` | Required | Get full resume by ID (includes `data`) |
 | `resume.create` | POST | `/resumes` | Required | Create new resume |
 | `resume.import` | POST | `/resumes/import` | Required | Import resume from JSON data |
 | `resume.update` | PUT | `/resumes/{id}` | Required | Full replace update |
@@ -208,16 +200,18 @@ All resume CRUD procedures require authentication (`protectedProcedure`).
 
 ### 6a. List Resumes
 ```
-GET /api/rpc/resumes
+GET /api/rpc/resume/list
+x-api-key: <api-key>
 ```
 or
 ```
 POST /api/rpc/resume/list
-Authorization: Bearer <token>   # OR x-api-key OR Cookie
 Content-Type: application/json
+x-api-key: <api-key>
 
-{"input": {"tags": [], "sort": "lastUpdatedAt"}}
+{"json": {"tags": [], "sort": "lastUpdatedAt"}}
 ```
+> **Verified:** Both GET and POST work. Response is wrapped in `{"json": [...]}`.
 
 **Input** (`packages/api/src/dto/resume.ts:22-26`):
 | Field | Type | Default | Description |
@@ -246,9 +240,13 @@ Source: `packages/api/src/dto/resume.ts:22-26` (output omits `data`, `password`,
 
 ### 6b. Get Resume by ID
 ```
-GET /api/rpc/resumes/{id}
-Authorization: Bearer <token>
+POST /api/rpc/resume/getById
+Content-Type: application/json
+x-api-key: <api-key>
+
+{"json": {"id": "019e0cb8-..."}}
 ```
+> **Verified:** Response is wrapped in `{"json": { ...full resume }}`. Includes `data`.
 
 **Input**: `id` — string resume UUID (path param)
 
@@ -591,39 +589,34 @@ Expected: Object mapping provider keys to display names.
 
 ### 4. List all resumes
 ```bash
-curl -s "{{RR_URL}}/api/rpc/resumes" \
-  -H "Authorization: Bearer {{TOKEN}}" \
-  | jq '.[] | {id, name, slug, updatedAt}'
+curl -s "{{RR_URL}}/api/rpc/resume/list" \
+  -H "x-api-key: {{API_KEY}}" \
+  | jq '.json[] | {id, name, slug, updatedAt}'
 ```
-Expected: Array of resume metadata objects (no `data` field).
+Expected: Array of resume metadata objects under `json` key (no `data` field).
 
 ### 5. Get a single resume (full data)
 ```bash
 RESUME_ID="<paste-id-from-step-4>"
-curl -s "{{RR_URL}}/api/rpc/resumes/${RESUME_ID}" \
-  -H "Authorization: Bearer {{TOKEN}}" \
-  | jq '{id, name, hasPassword, "basics": .data.basics.name}'
-```
-Expected: Full resume object with `data.basics`, `data.sections`, `data.metadata`.
-
-### 6. Get resume via POST (oRPC native style)
-```bash
-RESUME_ID="<paste-id>"
 curl -s -X POST "{{RR_URL}}/api/rpc/resume/getById" \
-  -H "Authorization: Bearer {{TOKEN}}" \
+  -H "x-api-key: {{API_KEY}}" \
   -H "Content-Type: application/json" \
-  -d "{\"input\": {\"id\": \"${RESUME_ID}\"}}" \
-  | jq .
+  -d "{\"json\": {\"id\": \"${RESUME_ID}\"}}" \
+  | jq '.json | {id, name, hasPassword, "basics": .data.basics.name}'
+```
+Expected: Full resume object under `json` key with `data.basics`, `data.sections`, `data.metadata`.
+
+### 6. Get resume via GET (also works for list)
+```bash
+curl -s "{{RR_URL}}/api/rpc/resume/list" \
+  -H "x-api-key: {{API_KEY}}" \
+  | jq '.json'
 ```
 
-### 7. Download PDF (oRPC — streams directly)
-```bash
-RESUME_ID="<paste-id>"
-curl -s -L "{{RR_URL}}/api/rpc/resumes/${RESUME_ID}/pdf" \
-  -H "Authorization: Bearer {{TOKEN}}" \
-  -o "resume.pdf"
-echo "PDF saved to resume.pdf"
-```
+### 7. Download PDF (not available via oRPC on this instance)
+> PDF download endpoints returned 404 on this deployment (2026-06-03).
+> Consider using a Bearer token to access `/api/rpc/resumes/{id}/pdf` if the
+> feature is enabled in later versions.
 
 ### 8. Get public resume by slug (no auth)
 ```bash
@@ -643,11 +636,8 @@ curl -s -X POST "{{RR_URL}}/api/rpc/resumes" \
 ```
 Expected: String (new resume ID).
 
-### 10. Get OpenAPI spec
-```bash
-curl -s "{{RR_URL}}/api/openapi" | jq '.info, (.paths | keys)'
-```
-Expected: OpenAPI 3.x spec with all endpoints from oRPC `.route()` definitions.
+### 10. Get OpenAPI spec (not available on this instance)
+> `/api/openapi` returned 404 on this deployment (2026-06-03).
 
 ---
 
@@ -659,9 +649,9 @@ Expected: OpenAPI 3.x spec with all endpoints from oRPC `.route()` definitions.
 4. Use in requests: `x-api-key: <your-api-key>`
 
 ```bash
-curl -s "{{RR_URL}}/api/rpc/resumes" \
+curl -s "{{RR_URL}}/api/rpc/resume/list" \
   -H "x-api-key: {{API_KEY}}" \
-  | jq '.[].name'
+  | jq '.json[].name'
 ```
 
 ---

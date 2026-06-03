@@ -33,46 +33,44 @@ _RETRY_SLEEP = 0.5
 
 
 class RRClient:
-    """Async HTTP client for the Reactive-Resume v5 API.
+    """Async HTTP client for the Reactive-Resume v5 oRPC API.
 
-    Endpoints:
-        GET /api/rpc/resumes          → resume.list  (metadata, no data field)
-        GET /api/rpc/resumes/{id}     → resume.getById (full resume + data)
-        GET /api/rpc/resumes/{id}/pdf → resume.export.downloadPdf (stream)
+    All procedures use POST with body ``{"json": <payload>}`` and
+    responses are unwrapped from the same ``{"json": <data>}`` envelope.
 
     Auth: x-api-key header (Better Auth API key plugin). api_token is never logged.
     """
 
     def __init__(self, base_url: str, api_token: str, timeout: int = 30) -> None:
-        self._api_base = base_url.rstrip("/") + "/api/rpc"
+        self._api_base = base_url.rstrip("/") + "/api/rpc/resume"
         self._timeout = timeout
-        self._headers = {"x-api-key": api_token, "Accept": "application/json"}
+        self._headers = {
+            "x-api-key": api_token,
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+        }
 
     async def list_resumes(self) -> list[dict[str, Any]]:
-        raw: Any = await self._get("/resumes")
+        raw = await self._rpc("list", {})
         if not isinstance(raw, list):
             raise RRClientError(f"Unexpected list_resumes response shape: {type(raw)}")
         return [_normalise_resume_meta(item) for item in raw]
 
     async def get_resume(self, resume_id: str) -> dict[str, Any]:
-        raw: Any = await self._get(f"/resumes/{resume_id}")
+        raw = await self._rpc("getById", {"id": resume_id})
         if not isinstance(raw, dict):
             raise RRClientError(f"Unexpected get_resume response shape: {type(raw)}")
-        return raw  # type: ignore[return-value]
+        return raw
 
-    async def print_resume(self, resume_id: str) -> bytes:
-        url = f"{self._api_base}/resumes/{resume_id}/pdf"
-        pdf_headers = {**self._headers, "Accept": "application/pdf"}
-        resp = await self._request_with_retry("GET", url, pdf_headers)
-        return resp.content
-
-    async def _get(self, path: str) -> Any:
-        url = f"{self._api_base}{path}"
-        resp = await self._request_with_retry("GET", url, self._headers)
-        return resp.json()
+    async def _rpc(self, procedure: str, payload: dict[str, Any]) -> Any:
+        url = f"{self._api_base}/{procedure}"
+        body = {"json": payload} if payload else {"json": {}}
+        resp = await self._request_with_retry("POST", url, body)
+        data = resp.json()
+        return data.get("json")
 
     async def _request_with_retry(
-        self, method: str, url: str, headers: dict[str, str]
+        self, method: str, url: str, body: dict[str, Any]
     ) -> httpx.Response:
         log = logger.bind(method=method, url=url)
         start = time.monotonic()
@@ -81,7 +79,9 @@ class RRClient:
             attempt += 1
             try:
                 async with httpx.AsyncClient(timeout=self._timeout) as client:
-                    resp = await client.request(method, url, headers=headers)
+                    resp = await client.request(
+                        method, url, headers=self._headers, json=body
+                    )
             except (httpx.TimeoutException, httpx.NetworkError) as exc:
                 duration_ms = int((time.monotonic() - start) * 1000)
                 log.warning("rr_client.timeout", duration_ms=duration_ms, attempt=attempt)
@@ -91,7 +91,12 @@ class RRClient:
                 continue
 
             duration_ms = int((time.monotonic() - start) * 1000)
-            log.info("rr_client.response", status_code=resp.status_code, duration_ms=duration_ms, attempt=attempt)
+            log.info(
+                "rr_client.response",
+                status_code=resp.status_code,
+                duration_ms=duration_ms,
+                attempt=attempt,
+            )
 
             if resp.status_code in (401, 403):
                 raise RRAuthError(f"Auth failed HTTP {resp.status_code}: {url}")
@@ -99,7 +104,9 @@ class RRClient:
                 raise RRNotFoundError(f"Not found: {url}")
             if resp.status_code in _RETRY_STATUSES:
                 if attempt >= 2:
-                    raise RRUnavailableError(f"Service unavailable HTTP {resp.status_code}: {url}")
+                    raise RRUnavailableError(
+                        f"Service unavailable HTTP {resp.status_code}: {url}"
+                    )
                 await asyncio.sleep(_RETRY_SLEEP)
                 continue
             if resp.status_code >= 400:
@@ -122,5 +129,9 @@ def _normalise_resume_meta(item: dict[str, Any]) -> dict[str, Any]:
         "id": item.get("id"),
         "title": item.get("name") or item.get("title"),
         "updated_at": item.get("updatedAt") or item.get("updated_at"),
-        **{k: v for k, v in item.items() if k not in {"id", "name", "title", "updatedAt", "updated_at"}},
+        **{
+            k: v
+            for k, v in item.items()
+            if k not in {"id", "name", "title", "updatedAt", "updated_at"}
+        },
     }
