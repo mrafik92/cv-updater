@@ -1,8 +1,11 @@
+from pathlib import Path
 from functools import lru_cache
 
 from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+# Resolve absolute path to the .env file in the project root
+ENV_FILE_PATH = Path(__file__).resolve().parent.parent / ".env"
 
 class Settings(BaseSettings):
     app_host: str = "127.0.0.1"
@@ -17,7 +20,7 @@ class Settings(BaseSettings):
     pdf_timeout_seconds: int = 60
 
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=str(ENV_FILE_PATH),
         env_file_encoding="utf-8",
         env_prefix="",
         extra="ignore",

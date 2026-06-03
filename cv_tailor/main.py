@@ -50,4 +50,11 @@ async def index(request: Request):
     return templates.TemplateResponse(request, "index.html")
 
 
+if __name__ == "__main__":
+    import uvicorn
+
+    settings = get_settings()
+    uvicorn.run(app, host=settings.app_host, port=settings.app_port)
+
+
 

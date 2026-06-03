@@ -26,14 +26,13 @@ bash deploy/install.sh
 
 The script will:
 
-1. Create the `cvtailor` system user
-2. Clone the repo to `/opt/cv-tailor` (or `git pull` if already present)
-3. Install `uv` (Python package manager) if not found
-4. Install Python dependencies via `uv sync`
-5. Install Playwright Chromium for PDF generation
-6. Copy `.env.example` → `.env` if no `.env` exists (you must fill in secrets — see [Configuration](#configuration))
-7. Run database migrations (`alembic upgrade head`)
-8. Install and enable the `cv-tailor` systemd unit
+1. Clone the repo to `/opt/cv-tailor` (or `git pull` if already present)
+2. Install `uv` (Python package manager) if not found
+3. Install Python dependencies via `uv sync`
+4. Install Playwright Chromium for PDF generation
+5. Copy `.env.example` → `.env` if no `.env` exists (you must fill in secrets — see [Configuration](#configuration))
+6. Run database migrations (`alembic upgrade head`)
+7. Install and enable the `cv-tailor` systemd unit
 
 After install, the app is available at `http://127.0.0.1:8000`.
 
@@ -94,7 +93,7 @@ journalctl -u cv-tailor -f
 
 **Port 8000 already in use**
 
-Check what is using the port and stop it, or change `APP_PORT` in `.env` and update `ExecStart` in the systemd unit accordingly.
+Check what is using the port and stop it, or change `APP_PORT` in `.env` and restart the service.
 
 ```bash
 ss -tlnp | grep 8000
@@ -102,7 +101,7 @@ ss -tlnp | grep 8000
 
 **Missing or invalid env vars**
 
-If the app fails to start, check the logs for `ValidationError` or `missing` messages. Ensure all required values in `/opt/cv-tailor/.env` are set and the file is readable by the `cvtailor` user (`chmod 600 /opt/cv-tailor/.env`).
+If the app fails to start, check the logs for `ValidationError` or `missing` messages. Ensure all required values in `/opt/cv-tailor/.env` are set and the file is readable by root (`chmod 600 /opt/cv-tailor/.env`).
 
 **Playwright / Chromium dependency errors**
 
@@ -135,8 +134,8 @@ systemctl status cv-tailor
 journalctl -u cv-tailor --no-pager -n 50
 ```
 
-Ensure `/opt/cv-tailor` and its contents are owned by `cvtailor`:
+Ensure `/opt/cv-tailor` and its contents are owned by root:
 
 ```bash
-chown -R cvtailor:cvtailor /opt/cv-tailor
+chown -R root:root /opt/cv-tailor
 ```
