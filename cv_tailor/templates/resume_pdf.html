@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>{{ resume.basics.name | default('Resume') }}</title>
+  <title>{{ resume["basics"]["name"] | default('Resume') }}</title>
   <style>
     /* Page setup */
     @page {
@@ -179,64 +179,64 @@
 <body>
 <div class="page">
 
-  {%- set basics = resume.basics %}
-  {%- set sections = resume.sections %}
+  {%- set basics = resume["basics"] %}
+  {%- set sections = resume["sections"] %}
 
   <!-- Header -->
   <header class="header">
-    <div class="header__name">{{ basics.name | default('') }}</div>
-    {%- if basics.headline %}
-    <div class="header__headline">{{ basics.headline }}</div>
+    <div class="header__name">{{ basics["name"] | default('') }}</div>
+    {%- if basics["headline"] %}
+    <div class="header__headline">{{ basics["headline"] }}</div>
     {%- endif %}
     <div class="header__contact">
-      {%- if basics.email %}<span>{{ basics.email }}</span>{%- endif %}
-      {%- if basics.phone %}<span>{{ basics.phone }}</span>{%- endif %}
-      {%- if basics.location %}
-        {%- set loc = basics.location %}
+      {%- if basics["email"] %}<span>{{ basics["email"] }}</span>{%- endif %}
+      {%- if basics["phone"] %}<span>{{ basics["phone"] }}</span>{%- endif %}
+      {%- if basics["location"] %}
+        {%- set loc = basics["location"] %}
         {%- set loc_parts = [] %}
-        {%- if loc.city %}{% set _ = loc_parts.append(loc.city) %}{% endif %}
-        {%- if loc.country %}{% set _ = loc_parts.append(loc.country) %}{% endif %}
+        {%- if loc["city"] %}{% set _ = loc_parts.append(loc["city"]) %}{% endif %}
+        {%- if loc["country"] %}{% set _ = loc_parts.append(loc["country"]) %}{% endif %}
         {%- if loc_parts %}<span>{{ loc_parts | join(', ') }}</span>{%- endif %}
       {%- endif %}
-      {%- if basics.url %}<span>{{ basics.url }}</span>{%- endif %}
+      {%- if basics["url"] %}<span>{{ basics["url"] }}</span>{%- endif %}
     </div>
   </header>
 
   <!-- Summary -->
-  {%- if basics.summary %}
+  {%- if basics["summary"] %}
   <section class="section">
     <div class="section__title">Summary</div>
-    <p class="summary">{{ basics.summary }}</p>
+    <p class="summary">{{ basics["summary"] }}</p>
   </section>
   {%- endif %}
 
   <!-- Experience -->
-  {%- if sections.experience and sections.experience.items %}
+  {%- if sections["experience"] and sections["experience"]["items"] %}
   <section class="section">
-    <div class="section__title">{{ sections.experience.name | default('Experience') }}</div>
-    {%- for item in sections.experience.items %}
-      {%- if item.visible != false %}
-      {%- set d = item.data %}
+    <div class="section__title">{{ sections["experience"]["name"] | default('Experience') }}</div>
+    {%- for item in sections["experience"]["items"] %}
+      {%- if item["visible"] != false %}
+      {%- set d = item["data"] %}
       <div class="item">
         <div class="item__header">
           <div>
-            <span class="item__title">{{ d.position | default('') }}</span>
-            {%- if d.company %}
-            <span class="item__subtitle"> · {{ d.company }}</span>
+            <span class="item__title">{{ d["position"] | default('') }}</span>
+            {%- if d["company"] %}
+            <span class="item__subtitle"> · {{ d["company"] }}</span>
             {%- endif %}
           </div>
           <div class="item__dates">
-            {%- set start = d.date.start | default('') if d.date is defined else '' %}
-            {%- set end = d.date.end | default('Present') if d.date is defined else '' %}
+            {%- set start = d["date"]["start"] | default('') if d["date"] is defined else '' %}
+            {%- set end = d["date"]["end"] | default('Present') if d["date"] is defined else '' %}
             {%- if start or end %}{{ start }}{% if start and end %} – {% endif %}{{ end }}{%- endif %}
           </div>
         </div>
-        {%- if d.summary %}
-        <div class="item__body">{{ d.summary }}</div>
+        {%- if d["summary"] %}
+        <div class="item__body">{{ d["summary"] }}</div>
         {%- endif %}
-        {%- if d.bullets %}
+        {%- if d["bullets"] %}
         <ul class="item__bullets item__body">
-          {%- for bullet in d.bullets %}
+          {%- for bullet in d["bullets"] %}
           <li>{{ bullet }}</li>
           {%- endfor %}
         </ul>
@@ -248,31 +248,31 @@
   {%- endif %}
 
   <!-- Education -->
-  {%- if sections.education and sections.education.items %}
+  {%- if sections["education"] and sections["education"]["items"] %}
   <section class="section">
-    <div class="section__title">{{ sections.education.name | default('Education') }}</div>
-    {%- for item in sections.education.items %}
-      {%- if item.visible != false %}
-      {%- set d = item.data %}
+    <div class="section__title">{{ sections["education"]["name"] | default('Education') }}</div>
+    {%- for item in sections["education"]["items"] %}
+      {%- if item["visible"] != false %}
+      {%- set d = item["data"] %}
       <div class="item">
         <div class="item__header">
           <div>
-            <span class="item__title">{{ d.institution | default('') }}</span>
-            {%- if d.area or d.studyType %}
+            <span class="item__title">{{ d["institution"] | default('') }}</span>
+            {%- if d["area"] or d["studyType"] %}
             <span class="item__subtitle">
-              {%- if d.studyType %} · {{ d.studyType }}{% endif %}
-              {%- if d.area %} in {{ d.area }}{% endif %}
+              {%- if d["studyType"] %} · {{ d["studyType"] }}{% endif %}
+              {%- if d["area"] %} in {{ d["area"] }}{% endif %}
             </span>
             {%- endif %}
           </div>
           <div class="item__dates">
-            {%- set start = d.date.start | default('') if d.date is defined else '' %}
-            {%- set end = d.date.end | default('') if d.date is defined else '' %}
+            {%- set start = d["date"]["start"] | default('') if d["date"] is defined else '' %}
+            {%- set end = d["date"]["end"] | default('') if d["date"] is defined else '' %}
             {%- if start or end %}{{ start }}{% if start and end %} – {% endif %}{{ end }}{%- endif %}
           </div>
         </div>
-        {%- if d.summary %}
-        <div class="item__body">{{ d.summary }}</div>
+        {%- if d["summary"] %}
+        <div class="item__body">{{ d["summary"] }}</div>
         {%- endif %}
       </div>
       {%- endif %}
@@ -281,17 +281,17 @@
   {%- endif %}
 
   <!-- Skills -->
-  {%- if sections.skills and sections.skills.items %}
+  {%- if sections["skills"] and sections["skills"]["items"] %}
   <section class="section">
-    <div class="section__title">{{ sections.skills.name | default('Skills') }}</div>
+    <div class="section__title">{{ sections["skills"]["name"] | default('Skills') }}</div>
     <div class="skills-grid">
-      {%- for item in sections.skills.items %}
-        {%- if item.visible != false %}
-        {%- set d = item.data %}
+      {%- for item in sections["skills"]["items"] %}
+        {%- if item["visible"] != false %}
+        {%- set d = item["data"] %}
         <div class="skill-item">
-          {%- if d.name %}<span class="skill-item__name">{{ d.name }}</span>{%- endif %}
-          {%- if d.keywords %}
-          <span class="skill-item__keywords">: {{ d.keywords | join(', ') }}</span>
+          {%- if d["name"] %}<span class="skill-item__name">{{ d["name"] }}</span>{%- endif %}
+          {%- if d["keywords"] %}
+          <span class="skill-item__keywords">: {{ d["keywords"] | join(', ') }}</span>
           {%- endif %}
         </div>
         {%- endif %}
@@ -301,28 +301,28 @@
   {%- endif %}
 
   <!-- Projects -->
-  {%- if sections.projects and sections.projects.items %}
+  {%- if sections["projects"] and sections["projects"]["items"] %}
   <section class="section">
-    <div class="section__title">{{ sections.projects.name | default('Projects') }}</div>
-    {%- for item in sections.projects.items %}
-      {%- if item.visible != false %}
-      {%- set d = item.data %}
+    <div class="section__title">{{ sections["projects"]["name"] | default('Projects') }}</div>
+    {%- for item in sections["projects"]["items"] %}
+      {%- if item["visible"] != false %}
+      {%- set d = item["data"] %}
       <div class="item">
         <div class="item__header">
           <div>
-            <span class="item__title">{{ d.name | default('') }}</span>
-            {%- if d.url %}
-            <span class="project-url"> · {{ d.url }}</span>
+            <span class="item__title">{{ d["name"] | default('') }}</span>
+            {%- if d["url"] %}
+            <span class="project-url"> · {{ d["url"] }}</span>
             {%- endif %}
           </div>
           <div class="item__dates">
-            {%- set start = d.date.start | default('') if d.date is defined else '' %}
-            {%- set end = d.date.end | default('') if d.date is defined else '' %}
+            {%- set start = d["date"]["start"] | default('') if d["date"] is defined else '' %}
+            {%- set end = d["date"]["end"] | default('') if d["date"] is defined else '' %}
             {%- if start or end %}{{ start }}{% if start and end %} – {% endif %}{{ end }}{%- endif %}
           </div>
         </div>
-        {%- if d.summary %}
-        <div class="item__body">{{ d.summary }}</div>
+        {%- if d["summary"] %}
+        <div class="item__body">{{ d["summary"] }}</div>
         {%- endif %}
       </div>
       {%- endif %}
@@ -331,19 +331,19 @@
   {%- endif %}
 
   <!-- Certifications -->
-  {%- if sections.certifications and sections.certifications.items %}
+  {%- if sections["certifications"] and sections["certifications"]["items"] %}
   <section class="section">
-    <div class="section__title">{{ sections.certifications.name | default('Certifications') }}</div>
-    {%- for item in sections.certifications.items %}
-      {%- if item.visible != false %}
-      {%- set d = item.data %}
+    <div class="section__title">{{ sections["certifications"]["name"] | default('Certifications') }}</div>
+    {%- for item in sections["certifications"]["items"] %}
+      {%- if item["visible"] != false %}
+      {%- set d = item["data"] %}
       <div class="item">
         <div class="item__header">
           <div>
-            <span class="item__title">{{ d.name | default('') }}</span>
-            {%- if d.issuer %}<span class="item__subtitle"> · {{ d.issuer }}</span>{%- endif %}
+            <span class="item__title">{{ d["name"] | default('') }}</span>
+            {%- if d["issuer"] %}<span class="item__subtitle"> · {{ d["issuer"] }}</span>{%- endif %}
           </div>
-          <div class="item__dates">{{ d.date | default('') }}</div>
+          <div class="item__dates">{{ d["date"] | default('') }}</div>
         </div>
       </div>
       {%- endif %}
