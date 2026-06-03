@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>{{ resume.data.basics.name | default('Resume') }}</title>
+  <title>{{ resume.basics.name | default('Resume') }}</title>
   <style>
     /* Page setup */
     @page {
@@ -179,8 +179,8 @@
 <body>
 <div class="page">
 
-  {%- set basics = resume.data.basics %}
-  {%- set sections = resume.data.sections %}
+  {%- set basics = resume.basics %}
+  {%- set sections = resume.sections %}
 
   <!-- Header -->
   <header class="header">

@@ -18,13 +18,13 @@ class FabricationError(Exception):
 
 def _extract_employers(resume: dict) -> set[str]:
     names: set[str] = set()
-    sections = resume.get("sections", {})
+    sections = resume.get("sections", resume.get("data", {}).get("sections", {}))
     for section_key in ("experience", "education"):
         section = sections.get(section_key, {})
         for item in section.get("items", []):
-            data = item.get("data", {})
+            item_data = item.get("data", {})
             for field in ("company", "institution", "name"):
-                val = data.get(field, "")
+                val = item_data.get(field, "")
                 if val and isinstance(val, str):
                     names.add(val.strip().lower())
     return names
