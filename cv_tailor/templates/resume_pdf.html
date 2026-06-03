@@ -4,185 +4,44 @@
   <meta charset="utf-8" />
   <title>{{ resume["basics"]["name"] | default('Resume') }}</title>
   <style>
-    /* Page setup */
-    @page {
-      size: A4;
-      margin: 16mm;
-    }
-
-    /* Reset & base */
+    @page { size: A4; margin: 16mm; }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    html {
-      font-size: 10pt;
-      -webkit-font-smoothing: antialiased;
-      font-variant-numeric: tabular-nums;
-    }
-
-    body {
-      font-family: Georgia, 'Times New Roman', Times, serif;
-      color: #1a1a1a;
-      background: #fff;
-      line-height: 1.5;
-    }
-
-    /* Typography */
-    h1, h2, h3, h4 {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    }
-
+    html { font-size: 10pt; -webkit-font-smoothing: antialiased; font-variant-numeric: tabular-nums; }
+    body { font-family: Georgia, 'Times New Roman', Times, serif; color: #1a1a1a; background: #fff; line-height: 1.5; }
+    h1, h2, h3, h4 { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
     a { color: inherit; text-decoration: none; }
-
-    /* Layout */
     .page { max-width: 100%; }
-
-    /* Header */
-    .header {
-      border-bottom: 1.5px solid #1a1a1a;
-      padding-bottom: 8pt;
-      margin-bottom: 12pt;
-    }
-
-    .header__name {
-      font-size: 20pt;
-      font-weight: 700;
-      letter-spacing: -0.01em;
-      line-height: 1.2;
-    }
-
-    .header__headline {
-      font-size: 11pt;
-      color: #444;
-      margin-top: 2pt;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    }
-
-    .header__contact {
-      margin-top: 5pt;
-      font-size: 8.5pt;
-      color: #555;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0 14pt;
-    }
-
+    .header { border-bottom: 1.5px solid #1a1a1a; padding-bottom: 8pt; margin-bottom: 12pt; }
+    .header__name { font-size: 20pt; font-weight: 700; letter-spacing: -0.01em; line-height: 1.2; }
+    .header__headline { font-size: 11pt; color: #444; margin-top: 2pt; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    .header__contact { margin-top: 5pt; font-size: 8.5pt; color: #555; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; display: flex; flex-wrap: wrap; gap: 0 14pt; }
     .header__contact span { white-space: nowrap; }
-
-    /* Sections */
-    .section {
-      margin-bottom: 12pt;
-      break-inside: avoid;
-    }
-
-    .section__title {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      font-size: 7.5pt;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #555;
-      border-bottom: 0.75pt solid #ccc;
-      padding-bottom: 2pt;
-      margin-bottom: 7pt;
-    }
-
-    /* Summary */
+    .section { margin-bottom: 12pt; break-inside: avoid; }
+    .section__title { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 7.5pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #555; border-bottom: 0.75pt solid #ccc; padding-bottom: 2pt; margin-bottom: 7pt; }
     .summary { font-size: 9.5pt; color: #333; }
-
-    /* Experience / Education items */
-    .item {
-      margin-bottom: 9pt;
-      break-inside: avoid;
-    }
-
+    .item { margin-bottom: 9pt; break-inside: avoid; }
     .item:last-child { margin-bottom: 0; }
-
-    .item__header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 8pt;
-    }
-
-    .item__title {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      font-size: 9.5pt;
-      font-weight: 600;
-      color: #1a1a1a;
-    }
-
-    .item__subtitle {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      font-size: 9pt;
-      color: #444;
-    }
-
-    .item__dates {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      font-size: 8pt;
-      color: #666;
-      white-space: nowrap;
-      font-variant-numeric: tabular-nums;
-      flex-shrink: 0;
-    }
-
-    .item__body {
-      margin-top: 3pt;
-      font-size: 9pt;
-      color: #333;
-    }
-
-    .item__bullets {
-      list-style: disc;
-      padding-left: 13pt;
-    }
-
-    .item__bullets li {
-      margin-bottom: 1.5pt;
-    }
-
-    /* Skills */
-    .skills-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5pt 16pt;
-    }
-
+    .item__header { display: flex; justify-content: space-between; align-items: baseline; gap: 8pt; }
+    .item__title { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 9.5pt; font-weight: 600; color: #1a1a1a; }
+    .item__subtitle { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 9pt; color: #444; }
+    .item__dates { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 8pt; color: #666; white-space: nowrap; font-variant-numeric: tabular-nums; flex-shrink: 0; }
+    .item__body { margin-top: 3pt; font-size: 9pt; color: #333; }
+    .item__bullets { padding-left: 13pt; }
+    .item__bullets li { margin-bottom: 1.5pt; }
+    .skills-grid { display: flex; flex-wrap: wrap; gap: 5pt 16pt; }
     .skill-item { font-size: 9pt; }
-
-    .skill-item__name {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      font-weight: 600;
-      font-size: 9pt;
-    }
-
-    .skill-item__keywords {
-      color: #444;
-      font-size: 8.5pt;
-    }
-
-    /* Projects */
-    .project-url {
-      font-size: 8pt;
-      color: #666;
-    }
-
-    /* Print safety */
-    @media print {
-      body { background: #fff; }
-      .section { break-inside: avoid; }
-      .item { break-inside: avoid; }
-    }
+    .skill-item__name { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-weight: 600; font-size: 9pt; }
+    .skill-item__keywords { color: #444; font-size: 8.5pt; }
+    .project-url { font-size: 8pt; color: #666; }
+    @media print { body { background: #fff; } .section { break-inside: avoid; } .item { break-inside: avoid; } }
   </style>
 </head>
 <body>
 <div class="page">
 
-  {%- set basics = resume["basics"] %}
-  {%- set sections = resume["sections"] %}
+  {%- set basics = resume["basics"] or {} %}
+  {%- set sections = resume["sections"] or {} %}
 
-  <!-- Header -->
   <header class="header">
     <div class="header__name">{{ basics["name"] | default('') }}</div>
     {%- if basics["headline"] %}
@@ -193,163 +52,110 @@
       {%- if basics["phone"] %}<span>{{ basics["phone"] }}</span>{%- endif %}
       {%- if basics["location"] %}
         {%- set loc = basics["location"] %}
-        {%- set loc_parts = [] %}
-        {%- if loc["city"] %}{% set _ = loc_parts.append(loc["city"]) %}{% endif %}
-        {%- if loc["country"] %}{% set _ = loc_parts.append(loc["country"]) %}{% endif %}
-        {%- if loc_parts %}<span>{{ loc_parts | join(', ') }}</span>{%- endif %}
+        {%- if loc is mapping %}
+          {%- set loc_parts = [] %}
+          {%- if loc.get("city") %}{% set _ = loc_parts.append(loc.city) %}{% endif %}
+          {%- if loc.get("country") %}{% set _ = loc_parts.append(loc.country) %}{% endif %}
+          {%- if loc_parts %}<span>{{ loc_parts | join(', ') }}</span>{%- endif %}
+        {%- else %}
+          <span>{{ loc }}</span>
+        {%- endif %}
       {%- endif %}
       {%- if basics["url"] %}<span>{{ basics["url"] }}</span>{%- endif %}
     </div>
   </header>
 
-  <!-- Summary -->
-  {%- if basics["summary"] %}
+  {%- if basics.get("summary") %}
   <section class="section">
     <div class="section__title">Summary</div>
     <p class="summary">{{ basics["summary"] }}</p>
   </section>
   {%- endif %}
 
-  <!-- Experience -->
-  {%- if sections["experience"] and sections["experience"]["items"] %}
-  <section class="section">
-    <div class="section__title">{{ sections["experience"]["name"] | default('Experience') }}</div>
-    {%- for item in sections["experience"]["items"] %}
-      {%- if item["visible"] != false %}
-      {%- set d = item["data"] %}
-      <div class="item">
-        <div class="item__header">
-          <div>
-            <span class="item__title">{{ d["position"] | default('') }}</span>
-            {%- if d["company"] %}
-            <span class="item__subtitle"> · {{ d["company"] }}</span>
-            {%- endif %}
-          </div>
-          <div class="item__dates">
-            {%- set start = d["date"]["start"] | default('') if d["date"] is defined else '' %}
-            {%- set end = d["date"]["end"] | default('Present') if d["date"] is defined else '' %}
-            {%- if start or end %}{{ start }}{% if start and end %} – {% endif %}{{ end }}{%- endif %}
-          </div>
-        </div>
-        {%- if d["summary"] %}
-        <div class="item__body">{{ d["summary"] }}</div>
-        {%- endif %}
-        {%- if d["bullets"] %}
-        <ul class="item__bullets item__body">
-          {%- for bullet in d["bullets"] %}
-          <li>{{ bullet }}</li>
-          {%- endfor %}
-        </ul>
-        {%- endif %}
-      </div>
-      {%- endif %}
-    {%- endfor %}
-  </section>
-  {%- endif %}
+  {%- for section_name in ["experience", "education", "projects", "skills", "certifications", "awards", "publications", "languages", "interests", "volunteer", "references", "profiles"] %}
+    {%- if sections.get(section_name) and sections[section_name].get("visible", true) != false %}
+      {%- set sec = sections[section_name] %}
+      {%- set items = sec.get("items", []) %}
+      {%- if items %}
 
-  <!-- Education -->
-  {%- if sections["education"] and sections["education"]["items"] %}
   <section class="section">
-    <div class="section__title">{{ sections["education"]["name"] | default('Education') }}</div>
-    {%- for item in sections["education"]["items"] %}
-      {%- if item["visible"] != false %}
-      {%- set d = item["data"] %}
-      <div class="item">
-        <div class="item__header">
-          <div>
-            <span class="item__title">{{ d["institution"] | default('') }}</span>
-            {%- if d["area"] or d["studyType"] %}
-            <span class="item__subtitle">
-              {%- if d["studyType"] %} · {{ d["studyType"] }}{% endif %}
-              {%- if d["area"] %} in {{ d["area"] }}{% endif %}
-            </span>
-            {%- endif %}
-          </div>
-          <div class="item__dates">
-            {%- set start = d["date"]["start"] | default('') if d["date"] is defined else '' %}
-            {%- set end = d["date"]["end"] | default('') if d["date"] is defined else '' %}
-            {%- if start or end %}{{ start }}{% if start and end %} – {% endif %}{{ end }}{%- endif %}
-          </div>
-        </div>
-        {%- if d["summary"] %}
-        <div class="item__body">{{ d["summary"] }}</div>
-        {%- endif %}
-      </div>
-      {%- endif %}
-    {%- endfor %}
-  </section>
-  {%- endif %}
+    <div class="section__title">{{ sec.get("name") | default(section_name | capitalize) }}</div>
 
-  <!-- Skills -->
-  {%- if sections["skills"] and sections["skills"]["items"] %}
-  <section class="section">
-    <div class="section__title">{{ sections["skills"]["name"] | default('Skills') }}</div>
+    {%- if section_name == "skills" %}
     <div class="skills-grid">
-      {%- for item in sections["skills"]["items"] %}
-        {%- if item["visible"] != false %}
-        {%- set d = item["data"] %}
+      {%- for item in items %}
+        {%- if item.get("visible", true) != false %}
         <div class="skill-item">
-          {%- if d["name"] %}<span class="skill-item__name">{{ d["name"] }}</span>{%- endif %}
-          {%- if d["keywords"] %}
-          <span class="skill-item__keywords">: {{ d["keywords"] | join(', ') }}</span>
+          {%- if item.get("name") %}<span class="skill-item__name">{{ item["name"] }}</span>{%- endif %}
+          {%- if item.get("keywords") %}
+          <span class="skill-item__keywords">: {{ item["keywords"] | join(', ') }}</span>
           {%- endif %}
         </div>
         {%- endif %}
       {%- endfor %}
     </div>
-  </section>
-  {%- endif %}
 
-  <!-- Projects -->
-  {%- if sections["projects"] and sections["projects"]["items"] %}
-  <section class="section">
-    <div class="section__title">{{ sections["projects"]["name"] | default('Projects') }}</div>
-    {%- for item in sections["projects"]["items"] %}
-      {%- if item["visible"] != false %}
-      {%- set d = item["data"] %}
+    {%- else %}
+      {%- for item in items %}
+        {%- if item.get("visible", true) != false %}
       <div class="item">
         <div class="item__header">
           <div>
-            <span class="item__title">{{ d["name"] | default('') }}</span>
-            {%- if d["url"] %}
-            <span class="project-url"> · {{ d["url"] }}</span>
+            <span class="item__title">{{ item.get("position") or item.get("name") or item.get("school") or item.get("institution") or item.get("degree") or item.get("language") or item.get("issuer") | default('') }}</span>
+            {%- if item.get("company") %}
+            <span class="item__subtitle"> · {{ item["company"] }}</span>
+            {%- elif item.get("area") or item.get("studyType") %}
+            <span class="item__subtitle">
+              {%- if item.get("studyType") %} · {{ item["studyType"] }}{% endif %}
+              {%- if item.get("area") %} in {{ item["area"] }}{% endif %}
+            </span>
+            {%- elif item.get("school") and item.get("school") != item.get("name") %}
+            <span class="item__subtitle"> · {{ item["school"] }}</span>
             {%- endif %}
           </div>
           <div class="item__dates">
-            {%- set start = d["date"]["start"] | default('') if d["date"] is defined else '' %}
-            {%- set end = d["date"]["end"] | default('') if d["date"] is defined else '' %}
-            {%- if start or end %}{{ start }}{% if start and end %} – {% endif %}{{ end }}{%- endif %}
+            {%- set date_ = item.get("date") or item.get("period") %}
+            {%- if date_ is mapping %}
+              {{ date_.get("start", "") }}{% if date_.get("start") and date_.get("end") %} – {% endif %}{{ date_.get("end", "Present") }}
+            {%- elif date_ is string %}{{ date_ }}{%- endif %}
           </div>
         </div>
-        {%- if d["summary"] %}
-        <div class="item__body">{{ d["summary"] }}</div>
+        {%- if item.get("description") %}
+        <div class="item__body">{{ item["description"] }}</div>
+        {%- endif %}
+        {%- if item.get("summary") %}
+        <div class="item__body">{{ item["summary"] }}</div>
+        {%- endif %}
+        {%- if item.get("bullets") %}
+        <ul class="item__bullets item__body">
+          {%- for bullet in item["bullets"] %}
+          <li>{{ bullet }}</li>
+          {%- endfor %}
+        </ul>
+        {%- endif %}
+        {%- if item.get("url") and item.get("url") is mapping and item["url"].get("url") %}
+        <span class="project-url"> · {{ item["url"]["url"] }}</span>
+        {%- elif item.get("url") is string %}
+        <span class="project-url"> · {{ item["url"] }}</span>
+        {%- endif %}
+        {%- if item.get("grade") %}
+        <div class="item__body">Grade: {{ item["grade"] }}</div>
+        {%- endif %}
+        {%- if item.get("location") is string %}
+        <div class="item__body" style="color:#666;font-size:8pt;">{{ item["location"] }}</div>
+        {%- elif item.get("location") is mapping and item["location"].get("address") %}
+        <div class="item__body" style="color:#666;font-size:8pt;">{{ item["location"]["address"] }}</div>
         {%- endif %}
       </div>
-      {%- endif %}
-    {%- endfor %}
-  </section>
-  {%- endif %}
+        {%- endif %}
+      {%- endfor %}
+    {%- endif %}
 
-  <!-- Certifications -->
-  {%- if sections["certifications"] and sections["certifications"]["items"] %}
-  <section class="section">
-    <div class="section__title">{{ sections["certifications"]["name"] | default('Certifications') }}</div>
-    {%- for item in sections["certifications"]["items"] %}
-      {%- if item["visible"] != false %}
-      {%- set d = item["data"] %}
-      <div class="item">
-        <div class="item__header">
-          <div>
-            <span class="item__title">{{ d["name"] | default('') }}</span>
-            {%- if d["issuer"] %}<span class="item__subtitle"> · {{ d["issuer"] }}</span>{%- endif %}
-          </div>
-          <div class="item__dates">{{ d["date"] | default('') }}</div>
-        </div>
-      </div>
-      {%- endif %}
-    {%- endfor %}
   </section>
-  {%- endif %}
+
+      {%- endif %}
+    {%- endif %}
+  {%- endfor %}
 
 </div>
 </body>
