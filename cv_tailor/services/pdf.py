@@ -57,6 +57,10 @@ async def render_pdf(resume: dict, *, timeout_seconds: int | None = None) -> byt
     if "data" in resume and isinstance(resume["data"], dict):
         resume = resume["data"]
 
+    summary = resume.get("summary", {})
+    if summary.get("content"):
+        resume.setdefault("basics", {})["summary"] = summary["content"]
+
     env = Environment(
         loader=FileSystemLoader(str(_TEMPLATES_DIR)),
         autoescape=select_autoescape(["html"]),

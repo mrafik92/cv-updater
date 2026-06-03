@@ -25,9 +25,10 @@
     .item__title { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 9.5pt; font-weight: 600; color: #1a1a1a; }
     .item__subtitle { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 9pt; color: #444; }
     .item__dates { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 8pt; color: #666; white-space: nowrap; font-variant-numeric: tabular-nums; flex-shrink: 0; }
-    .item__body { margin-top: 3pt; font-size: 9pt; color: #333; }
-    .item__bullets { padding-left: 13pt; }
-    .item__bullets li { margin-bottom: 1.5pt; }
+    .item__body { margin-top: 3pt; font-size: 9pt; color: #333; line-height: 1.5; }
+    .item__body ul, .item__body ol { padding-left: 16pt; }
+    .item__body li { margin-bottom: 2pt; }
+    .item__body p { margin-bottom: 4pt; }
     .skills-grid { display: flex; flex-wrap: wrap; gap: 5pt 16pt; }
     .skill-item { font-size: 9pt; }
     .skill-item__name { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-weight: 600; font-size: 9pt; }
@@ -42,6 +43,8 @@
   {%- set basics = resume["basics"] or {} %}
   {%- set sections = resume["sections"] or {} %}
 
+  {%- macro item_val(item, key) %}{{ item.get(key) or item.get("data", {}).get(key) | default('') }}{%- endmacro %}
+
   <header class="header">
     <div class="header__name">{{ basics["name"] | default('') }}</div>
     {%- if basics["headline"] %}
@@ -51,24 +54,26 @@
       {%- if basics["email"] %}<span>{{ basics["email"] }}</span>{%- endif %}
       {%- if basics["phone"] %}<span>{{ basics["phone"] }}</span>{%- endif %}
       {%- if basics["location"] %}
-        {%- set loc = basics["location"] %}
-        {%- if loc is mapping %}
+        {%- if basics["location"] is mapping %}
+          {%- set loc = basics["location"] %}
           {%- set loc_parts = [] %}
           {%- if loc.get("city") %}{% set _ = loc_parts.append(loc.city) %}{% endif %}
           {%- if loc.get("country") %}{% set _ = loc_parts.append(loc.country) %}{% endif %}
+          {%- if loc.get("address") %}{% set _ = loc_parts.append(loc.address) %}{% endif %}
           {%- if loc_parts %}<span>{{ loc_parts | join(', ') }}</span>{%- endif %}
         {%- else %}
-          <span>{{ loc }}</span>
+          <span>{{ basics["location"] }}</span>
         {%- endif %}
       {%- endif %}
-      {%- if basics["url"] %}<span>{{ basics["url"] }}</span>{%- endif %}
+      {%- set url = basics.get("website", {}).get("url") or basics.get("url") %}
+      {%- if url %}<span>{{ url }}</span>{%- endif %}
     </div>
   </header>
 
   {%- if basics.get("summary") %}
   <section class="section">
     <div class="section__title">Summary</div>
-    <p class="summary">{{ basics["summary"] }}</p>
+    <p class="summary">{{ basics["summary"] | safe }}</p>
   </section>
   {%- endif %}
 
@@ -84,12 +89,11 @@
     {%- if section_name == "skills" %}
     <div class="skills-grid">
       {%- for item in items %}
+        {%- set d = item.get("data", item) %}
         {%- if item.get("visible", true) != false %}
         <div class="skill-item">
-          {%- if item.get("name") %}<span class="skill-item__name">{{ item["name"] }}</span>{%- endif %}
-          {%- if item.get("keywords") %}
-          <span class="skill-item__keywords">: {{ item["keywords"] | join(', ') }}</span>
-          {%- endif %}
+          {%- if d.get("name") %}<span class="skill-item__name">{{ d["name"] }}</span>{%- endif %}
+          {%- if d.get("keywords") %}<span class="skill-item__keywords">: {{ d["keywords"] | join(', ') }}</span>{%- endif %}
         </div>
         {%- endif %}
       {%- endfor %}
@@ -98,53 +102,53 @@
     {%- else %}
       {%- for item in items %}
         {%- if item.get("visible", true) != false %}
+        {%- set d = item.get("data", item) %}
       <div class="item">
         <div class="item__header">
           <div>
-            <span class="item__title">{{ item.get("position") or item.get("name") or item.get("school") or item.get("institution") or item.get("degree") or item.get("language") or item.get("issuer") | default('') }}</span>
-            {%- if item.get("company") %}
-            <span class="item__subtitle"> · {{ item["company"] }}</span>
-            {%- elif item.get("area") or item.get("studyType") %}
+            <span class="item__title">{{ d.get("position") or d.get("name") or d.get("school") or d.get("institution") or d.get("degree") or d.get("language") or d.get("issuer") | default('') }}</span>
+            {%- if d.get("company") %}
+            <span class="item__subtitle"> · {{ d["company"] }}</span>
+            {%- elif d.get("area") or d.get("studyType") %}
             <span class="item__subtitle">
-              {%- if item.get("studyType") %} · {{ item["studyType"] }}{% endif %}
-              {%- if item.get("area") %} in {{ item["area"] }}{% endif %}
+              {%- if d.get("studyType") %} · {{ d["studyType"] }}{% endif %}
+              {%- if d.get("area") %} in {{ d["area"] }}{% endif %}
             </span>
-            {%- elif item.get("school") and item.get("school") != item.get("name") %}
-            <span class="item__subtitle"> · {{ item["school"] }}</span>
+            {%- elif d.get("school") and d.get("school") != d.get("name") %}
+            <span class="item__subtitle"> · {{ d["school"] }}</span>
             {%- endif %}
           </div>
           <div class="item__dates">
-            {%- set date_ = item.get("date") or item.get("period") %}
+            {%- set date_ = d.get("date") or d.get("period") %}
             {%- if date_ is mapping %}
               {{ date_.get("start", "") }}{% if date_.get("start") and date_.get("end") %} – {% endif %}{{ date_.get("end", "Present") }}
             {%- elif date_ is string %}{{ date_ }}{%- endif %}
           </div>
         </div>
-        {%- if item.get("description") %}
-        <div class="item__body">{{ item["description"] }}</div>
-        {%- endif %}
-        {%- if item.get("summary") %}
-        <div class="item__body">{{ item["summary"] }}</div>
-        {%- endif %}
-        {%- if item.get("bullets") %}
+        {%- set html_fields = ["description", "summary"] %}
+        {%- for field in html_fields %}
+          {%- if d.get(field) %}
+        <div class="item__body">{{ d[field] | safe }}</div>
+          {%- endif %}
+        {%- endfor %}
+        {%- if d.get("bullets") %}
         <ul class="item__bullets item__body">
-          {%- for bullet in item["bullets"] %}
+          {%- for bullet in d["bullets"] %}
           <li>{{ bullet }}</li>
           {%- endfor %}
         </ul>
         {%- endif %}
-        {%- if item.get("url") and item.get("url") is mapping and item["url"].get("url") %}
-        <span class="project-url"> · {{ item["url"]["url"] }}</span>
-        {%- elif item.get("url") is string %}
-        <span class="project-url"> · {{ item["url"] }}</span>
+        {%- set url_ = d.get("url") %}
+        {%- if url_ and url_ is mapping and url_.get("url") %}
+        <div class="project-url">{{ url_["url"] }}</div>
+        {%- elif url_ is string %}
+        <div class="project-url">{{ url_ }}</div>
         {%- endif %}
-        {%- if item.get("grade") %}
-        <div class="item__body">Grade: {{ item["grade"] }}</div>
+        {%- if d.get("grade") %}
+        <div class="item__body" style="margin-top:2pt;">Grade: {{ d["grade"] }}</div>
         {%- endif %}
-        {%- if item.get("location") is string %}
-        <div class="item__body" style="color:#666;font-size:8pt;">{{ item["location"] }}</div>
-        {%- elif item.get("location") is mapping and item["location"].get("address") %}
-        <div class="item__body" style="color:#666;font-size:8pt;">{{ item["location"]["address"] }}</div>
+        {%- if d.get("location") is string %}
+        <div class="item__body" style="margin-top:2pt;color:#666;font-size:8pt;">{{ d["location"] }}</div>
         {%- endif %}
       </div>
         {%- endif %}

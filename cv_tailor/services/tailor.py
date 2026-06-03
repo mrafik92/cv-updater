@@ -22,9 +22,8 @@ def _extract_employers(resume: dict) -> set[str]:
     for section_key in ("experience", "education"):
         section = sections.get(section_key, {})
         for item in section.get("items", []):
-            item_data = item.get("data", {})
             for field in ("company", "institution", "name"):
-                val = item_data.get(field, "")
+                val = item.get(field, "") or (item.get("data", {}).get(field, ""))
                 if val and isinstance(val, str):
                     names.add(val.strip().lower())
     return names
